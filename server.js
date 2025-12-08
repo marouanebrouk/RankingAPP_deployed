@@ -15,9 +15,22 @@ dotenv.config();
 const PORT = process.env.PORT || 8080;
 const MONGOURL = process.env.MONGO_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'default-secret-change-this';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+// Validate required environment variables
+if (!MONGOURL) {
+    console.error('❌ MONGO_URL environment variable is required!');
+    process.exit(1);
+}
+
+if (SESSION_SECRET === 'default-secret-change-this' && NODE_ENV === 'production') {
+    console.error('❌ SESSION_SECRET must be set in production!');
+    process.exit(1);
+}
 
 app.use(cors({
-    origin: '*',
+    origin: FRONTEND_URL,
     credentials: true
 }));
 
@@ -33,7 +46,7 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
         httpOnly: true,
-        secure: false // Set to true if using HTTPS
+        secure: NODE_ENV === 'production' // Auto-enable secure cookies in production (HTTPS)
     }
 }));
 
@@ -67,14 +80,18 @@ app.get('/', (req, res) => {
 });
 
 mongoose.connect(MONGOURL).then(async () => {
+    console.log('✅ Connected to MongoDB');
+    
     // Initialize OAuth
     await initCodeforcesOAuth();
     
-    // app.listen(PORT, () => {
-    //     console.log(`✅ Server is running on http://localhost:${PORT}`);
-    //     console.log(`📊 API Documentation available at http://localhost:${PORT}/`);
-    //     console.log(`🔐 OAuth Login: http://localhost:${PORT}/api/auth/codeforces`);
-    // });
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`✅ Server is running on http://localhost:${PORT}`);
+        console.log(`🌍 Environment: ${NODE_ENV}`);
+        console.log(`📊 API Documentation available at http://localhost:${PORT}/`);
+        console.log(`🔐 OAuth Login: http://localhost:${PORT}/api/auth/codeforces`);
+    });
 }).catch((error) => {
-    console.log("❌ Mongo connection failed:", error);
+    console.error("❌ MongoDB connection failed:", error);
+    process.exit(1);
 });
