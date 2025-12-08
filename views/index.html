@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42 Codeforces Ranking App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js"></script>
+</head>
+<body>
+    <!-- Login Required Section (shown when not authenticated) -->
+    <div id="loginRequired" class="login-required" style="display: none;">
+        <div class="login-box">
+            <h1>🏆 42 Codeforces Ranking App</h1>
+            <p style="margin: 20px 0; color: #666;">You must sign in with your 42 Intra account to access this platform</p>
+            <button class="btn-42" onclick="loginWith42()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px;">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Sign in with 42
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Content (shown when authenticated) -->
+    <div class="container" id="mainContent" style="display: none;">
+        <div class="header">
+            <h1>🏆 42 Codeforces Ranking App</h1>
+            <p>View live rankings from Codeforces</p>
+            <div id="userInfo" class="user-info" style="display: none;"></div>
+        </div>
+
+        <!-- Link Codeforces Account Section -->
+        <div class="card" id="linkCodeforcesCard">
+            <h2>🔗 Link Your Codeforces Account</h2>
+            <p style="color: #666; margin-bottom: 20px;">Connect your Codeforces account to appear in the rankings</p>
+            <div id="addMessage" class="message"></div>
+            <button class="btn-oauth" onclick="loginWithCodeforces()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px;">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                Link Codeforces Account
+            </button>
+            <button class="btn-logout" onclick="logout()" style="margin-left: 10px;">Logout from 42</button>
+        </div>
+
+        <!-- Rankings Section -->
+        <div class="card">
+            <div class="rankings-section">
+                <h2>Rankings</h2>
+                <button class="btn-secondary" onclick="loadRankings()">🔄 Show Rankings (Live Update)</button>
+                
+                <div id="rankingMessage" class="message"></div>
+                
+                <div id="stats" class="stats" style="display: none;">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="avgRating">0</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                </div>
+
+                <div id="loading" class="loading">
+                    <h3>⏳ Updating ratings from Codeforces API...</h3>
+                    <p>This may take a few seconds</p>
+                </div>
+
+                <div id="noData" class="no-data">
+                    <h3>📊 No users yet</h3>
+                    <p>Add some users to see the rankings!</p>
+                </div>
+
+                <table id="rankingsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>CF Handle</th>
+                            <th>42 Login</th>
+                            <th>Name</th>
+                            <th>Rating</th>
+                            <th>Rank Badge</th>
+                            <th>Max Rating</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      
+    </script>
+</body>
+</html>
