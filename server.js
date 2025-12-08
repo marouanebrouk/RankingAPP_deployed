@@ -17,7 +17,7 @@ const MONGOURL = process.env.MONGO_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'default-secret-change-this';
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true
 }));
 
@@ -70,11 +70,11 @@ mongoose.connect(MONGOURL).then(async () => {
     // Initialize OAuth
     await initCodeforcesOAuth();
     
-    app.listen(PORT, () => {
-        console.log(`✅ Server is running on http://localhost:${PORT}`);
-        console.log(`📊 API Documentation available at http://localhost:${PORT}/`);
-        console.log(`🔐 OAuth Login: http://localhost:${PORT}/api/auth/codeforces`);
-    });
+    // app.listen(PORT, () => {
+    //     console.log(`✅ Server is running on http://localhost:${PORT}`);
+    //     console.log(`📊 API Documentation available at http://localhost:${PORT}/`);
+    //     console.log(`🔐 OAuth Login: http://localhost:${PORT}/api/auth/codeforces`);
+    // });
 }).catch((error) => {
     console.log("❌ Mongo connection failed:", error);
 });
