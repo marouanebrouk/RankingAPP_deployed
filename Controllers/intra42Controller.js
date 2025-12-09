@@ -147,6 +147,46 @@ export const getCurrentUser = async (req, res) => {
 };
 
 /**
+ * Unlink Codeforces account
+ */
+export const unlinkCodeforces = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const user = await User.findById(req.session.user.id);
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Remove Codeforces data
+        user.codeforcesHandle = undefined;
+        user.codeforcesRating = undefined;
+        user.codeforcesRank = undefined;
+        user.codeforcesMaxRating = undefined;
+        user.codeforcesMaxRank = undefined;
+        user.codeforcesAvatar = undefined;
+        user.titlephoto = undefined;
+        user.lastUpdated = new Date();
+
+        await user.save();
+        
+        // Update session
+        req.session.user.codeforcesHandle = undefined;
+        req.session.user.codeforcesRating = undefined;
+        req.session.user.codeforcesRank = undefined;
+
+        console.log(`✅ Codeforces account unlinked for user: ${user.intraLogin}`);
+        res.json({ success: true, message: 'Codeforces account unlinked successfully' });
+    } catch (error) {
+        console.error('Unlink Codeforces error:', error);
+        res.status(500).json({ error: 'Failed to unlink Codeforces account' });
+    }
+};
+
+/**
  * Logout user
  */
 export const logout = async (req, res) => {

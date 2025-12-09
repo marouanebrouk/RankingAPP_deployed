@@ -30,7 +30,8 @@
         // Show logged in user info
         function showLoggedInUser(user) {
             const userInfo = document.getElementById('userInfo');
-            const linkCodeforcesCard = document.getElementById('linkCodeforcesCard');
+            const linkCfBtn = document.getElementById('linkCfBtn');
+            const unlinkCfBtn = document.getElementById('unlinkCfBtn');
             
             // Show 42 user info with clickable profile link
             userInfo.innerHTML = `
@@ -40,9 +41,13 @@
             `;
             userInfo.style.display = 'flex';
             
-            // If Codeforces is linked, hide the link button
+            // Show/hide buttons based on Codeforces link status
             if (user.codeforcesHandle) {
-                linkCodeforcesCard.querySelector('.btn-oauth').style.display = 'none';
+                linkCfBtn.style.display = 'none';
+                unlinkCfBtn.style.display = 'inline-block';
+            } else {
+                linkCfBtn.style.display = 'inline-block';
+                unlinkCfBtn.style.display = 'none';
             }
         }
 
@@ -54,6 +59,42 @@
         // Login with Codeforces (linking account)
         function loginWithCodeforces() {
             window.location.href = `${API_URL}/auth/codeforces`;
+        }
+
+        // Unlink Codeforces account
+        async function unlinkCodeforces() {
+            if (!confirm('Are you sure you want to unlink your Codeforces account? You will be removed from the rankings.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/unlink-codeforces`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const messageEl = document.getElementById('addMessage');
+                    messageEl.textContent = '✅ Codeforces account unlinked successfully';
+                    messageEl.className = 'message success';
+                    
+                    // Reload page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const messageEl = document.getElementById('addMessage');
+                    messageEl.textContent = `❌ ${data.error || 'Failed to unlink account'}`;
+                    messageEl.className = 'message error';
+                }
+            } catch (error) {
+                console.error('Unlink error:', error);
+                const messageEl = document.getElementById('addMessage');
+                messageEl.textContent = '❌ Failed to unlink Codeforces account';
+                messageEl.className = 'message error';
+            }
         }
 
         // Logout
