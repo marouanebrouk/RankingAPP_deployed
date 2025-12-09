@@ -66,6 +66,21 @@ app.use("/api/auth", intra42Router);  // 42 Intra OAuth routes
 app.use("/api/rankings", rankingRouter);
 app.use("/api/ressources", ressRouter);
 
+// Debug endpoint to test sessions
+app.get('/api/session-test', (req, res) => {
+    if (!req.session.views) {
+        req.session.views = 1;
+    } else {
+        req.session.views++;
+    }
+    res.json({
+        message: 'Session is working!',
+        sessionID: req.sessionID,
+        views: req.session.views,
+        cookie: req.session.cookie
+    });
+});
+
 app.get('/', (req, res) => {
     res.json({
         message: "🏆 Codeforces Ranking API",
@@ -82,6 +97,11 @@ app.get('/', (req, res) => {
                 method: "GET", 
                 path: "/api/rankings",
                 description: "Get all users ranked by rating (auto-updates from CF API)"
+            },
+            sessionTest: {
+                method: "GET",
+                path: "/api/session-test",
+                description: "Test if sessions are persisting correctly"
             }
         },
         example: "1. POST /api/users/add-user with {codeforcesHandle: 'tourist'}\n2. GET /api/rankings to see updated rankings"
