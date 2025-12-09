@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import session from 'express-session'
+import MongoStore from 'connect-mongo'
 import cors from 'cors'
 import ressRouter from './ressRouter.js'
 import authRouter from './routes/authRouter.js'
@@ -43,6 +44,10 @@ app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: MONGOURL,
+        touchAfter: 24 * 3600 // lazy session update (24 hours)
+    }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
         httpOnly: true,
