@@ -33,6 +33,15 @@ if (SESSION_SECRET === 'default-secret-change-this' && NODE_ENV === 'production'
 // Trust proxy - required for Render to detect HTTPS properly
 app.set('trust proxy', 1);
 
+// Security headers to help with Chrome Safe Browsing
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+});
+
 app.use(cors({
     origin: FRONTEND_URL,
     credentials: true
