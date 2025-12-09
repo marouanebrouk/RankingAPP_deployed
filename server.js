@@ -30,6 +30,9 @@ if (SESSION_SECRET === 'default-secret-change-this' && NODE_ENV === 'production'
     process.exit(1);
 }
 
+// Trust proxy - required for Render to detect HTTPS properly
+app.set('trust proxy', 1);
+
 app.use(cors({
     origin: FRONTEND_URL,
     credentials: true
@@ -43,7 +46,7 @@ app.use(express.static('views')); // Serve static HTML files
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Changed to true to save session even if not modified
     store: MongoStore.create({
         mongoUrl: MONGOURL,
         touchAfter: 24 * 3600 // lazy session update (24 hours)
@@ -51,7 +54,8 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
         httpOnly: true,
-        secure: NODE_ENV === 'production' // Auto-enable secure cookies in production (HTTPS)
+        secure: NODE_ENV === 'production', // Auto-enable secure cookies in production (HTTPS)
+        sameSite: NODE_ENV === 'production' ? 'none' : 'lax' // Required for cross-site cookies
     }
 }));
 

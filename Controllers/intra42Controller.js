@@ -17,9 +17,18 @@ export const loginWith42 = async (req, res) => {
         // Store state in session for verification
         req.session.intra42_state = authData.state;
         
-        res.redirect(authData.url);
+        // Force session save before redirect (critical for OAuth flow)
+        req.session.save((err) => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.redirect(`${frontendUrl}/index.html?error=Session+error`);
+            }
+            console.log('✅ Session saved with state:', authData.state);
+            res.redirect(authData.url);
+        });
     } catch (error) {
         console.error('42 Login error:', error);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
         res.redirect(`${frontendUrl}/index.html?error=42+login+failed`);
     }
 };
@@ -34,9 +43,16 @@ export const intra42Callback = async (req, res) => {
         const { code, state } = req.query;
         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+        console.log('🔍 Session Debug:');
+        console.log('   Query state:', state);
+        console.log('   Session state:', req.session.intra42_state);
+        console.log('   Session ID:', req.sessionID);
+
         // Verify state matches
         if (state !== req.session.intra42_state) {
             console.error('❌ State mismatch - possible CSRF attack');
+            console.error('   Expected:', req.session.intra42_state);
+            console.error('   Received:', state);
             return res.redirect(`${frontendUrl}/index.html?error=Invalid+state`);
         }
 
