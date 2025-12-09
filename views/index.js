@@ -1,4 +1,4 @@
-  const API_URL = 'http://localhost:3000/api';
+  const API_URL = 'https://rankingapp-tb5t.onrender.com/api';
 
         // Check login status on page load
         async function checkLoginStatus() {

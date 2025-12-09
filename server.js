@@ -12,7 +12,7 @@ import { initCodeforcesOAuth } from './oauthService.js'
 const app = express();
 
 dotenv.config();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 const MONGOURL = process.env.MONGO_URL;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'default-secret-change-this';
 const NODE_ENV = process.env.NODE_ENV || 'development';
