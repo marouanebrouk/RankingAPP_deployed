@@ -8,9 +8,10 @@ import User from '../Models/userModel.js';
 export const loginWith42 = async (req, res) => {
     try {
         const authData = get42AuthorizationUrl();
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
         
         if (!authData) {
-            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=42+OAuth+not+configured');
+            return res.redirect(`${frontendUrl}/index.html?error=42+OAuth+not+configured`);
         }
         
         // Store state in session for verification
@@ -19,7 +20,7 @@ export const loginWith42 = async (req, res) => {
         res.redirect(authData.url);
     } catch (error) {
         console.error('42 Login error:', error);
-        res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=42+login+failed');
+        res.redirect(`${frontendUrl}/index.html?error=42+login+failed`);
     }
 };
 
@@ -31,22 +32,23 @@ export const intra42Callback = async (req, res) => {
     try {
         console.log('📥 42 OAuth callback received');
         const { code, state } = req.query;
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
         // Verify state matches
         if (state !== req.session.intra42_state) {
             console.error('❌ State mismatch - possible CSRF attack');
-            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=Invalid+state');
+            return res.redirect(`${frontendUrl}/index.html?error=Invalid+state`);
         }
 
         if (!code) {
-            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=No+authorization+code');
+            return res.redirect(`${frontendUrl}/index.html?error=No+authorization+code`);
         }
 
         // Exchange code for user info
         const result = await handle42Callback(code);
 
         if (!result.success) {
-            return res.redirect(`https://rankingapp-tb5t.onrender.com/index.html?error=${encodeURIComponent(result.error)}`);
+            return res.redirect(`${frontendUrl}/index.html?error=${encodeURIComponent(result.error)}`);
         }
 
         const { intraLogin, email, avatar } = result.user;
@@ -86,10 +88,11 @@ export const intra42Callback = async (req, res) => {
         };
 
         // Redirect to home page with success message
-        res.redirect(`https://rankingapp-tb5t.onrender.com/index.html?login=success&user=${encodeURIComponent(intraLogin)}`);
+        res.redirect(`${frontendUrl}/index.html?login=success&user=${encodeURIComponent(intraLogin)}`);
     } catch (error) {
         console.error('❌ 42 callback error:', error);
-        res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=Callback+failed');
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        res.redirect(`${frontendUrl}/index.html?error=Callback+failed`);
     }
 };
 
