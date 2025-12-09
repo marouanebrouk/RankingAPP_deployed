@@ -11,7 +11,7 @@ export const loginWithCodeforces = async (req, res) => {
         const authData = await getAuthorizationUrl();
         
         if (!authData) {
-            return res.redirect('http://localhost:3000/index.html?error=OAuth+not+available');
+            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=OAuth+not+available');
         }
         
         // Store PKCE verifier and state in session
@@ -21,7 +21,7 @@ export const loginWithCodeforces = async (req, res) => {
         res.redirect(authData.url);
     } catch (error) {
         console.error('Login error:', error);
-        res.redirect('http://localhost:3000/index.html?error=OAuth+discovery+failed+-+feature+may+not+be+available');
+        res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=OAuth+discovery+failed+-+feature+may+not+be+available');
     }
 };
 
@@ -46,13 +46,13 @@ export const codeforcesCallback = async (req, res) => {
         
         // Check if user is logged in with 42 first
         if (!req.session.user) {
-            return res.redirect('http://localhost:3000/index.html?error=You+must+login+with+42+first');
+            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=You+must+login+with+42+first');
         }
 
         const result = await handleCallback(req.query, sessionData);
 
         if (!result.success) {
-            return res.redirect(`http://localhost:3000/index.html?error=${encodeURIComponent(result.error)}`);
+            return res.redirect(`https://rankingapp-tb5t.onrender.com/index.html?error=${encodeURIComponent(result.error)}`);
         }
 
         const { handle } = result.user;
@@ -64,7 +64,7 @@ export const codeforcesCallback = async (req, res) => {
         const user = await User.findById(req.session.user.id);
         
         if (!user) {
-            return res.redirect('http://localhost:3000/index.html?error=User+not+found');
+            return res.redirect('https://rankingapp-tb5t.onrender.com/index.html?error=User+not+found');
         }
 
         // Link Codeforces account
@@ -88,10 +88,10 @@ export const codeforcesCallback = async (req, res) => {
         req.session.user.codeforcesRank = user.codeforcesRank;
 
         // Redirect to frontend with success
-        res.redirect(`http://localhost:3000/index.html?login=success&user=${handle}`);
+        res.redirect(`https://rankingapp-tb5t.onrender.com/index.html?login=success&user=${handle}`);
     } catch (error) {
         console.error('Callback error:', error);
-        res.redirect(`http://localhost:3000/index.html?error=${encodeURIComponent('Authentication failed')}`);
+        res.redirect(`https://rankingapp-tb5t.onrender.com/index.html?error=${encodeURIComponent('Authentication failed')}`);
     }
 };
 
