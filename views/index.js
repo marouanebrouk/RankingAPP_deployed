@@ -1,4 +1,4 @@
-  const API_URL = 'https://rankingapp-tb5t.onrender.com/api';
+  const API_URL = 'https://ranking-app-three.vercel.app/api';
 
         // Check login status on page load
         async function checkLoginStatus() {
