@@ -71,6 +71,10 @@ const userSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    deletedCFHandle: {
+        type: String,
+        default: ''
+    },
     createdAt: {
         type: Date,
         default: Date.now

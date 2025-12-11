@@ -161,6 +161,11 @@ export const unlinkCodeforces = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // Store the CF handle before removing it
+        if (user.codeforcesHandle) {
+            user.deletedCFHandle = user.codeforcesHandle;
+        }
+
         // Remove Codeforces data
         user.codeforcesHandle = undefined;
         user.codeforcesRating = undefined;
