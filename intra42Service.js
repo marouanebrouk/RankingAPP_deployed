@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { URLSearchParams } from "url";
 
 const INTRA_42_CONFIG = {
     authorization_endpoint: 'https://api.intra.42.fr/oauth/authorize',
