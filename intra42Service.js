@@ -49,18 +49,21 @@ export const handle42Callback = async (code) => {
         console.log('🔄 Exchanging 42 authorization code for token...');
 
         // Exchange code for access token
+        // 42 API requires form-urlencoded, not JSON
+        const params = new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: clientId,
+            client_secret: clientSecret,
+            code: code,
+            redirect_uri: callbackUrl,
+        });
+
         const tokenResponse = await axios.post(
             INTRA_42_CONFIG.token_endpoint,
-            {
-                grant_type: 'authorization_code',
-                client_id: clientId,
-                client_secret: clientSecret,
-                code: code,
-                redirect_uri: callbackUrl,
-            },
+            params,
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
             }
         );
